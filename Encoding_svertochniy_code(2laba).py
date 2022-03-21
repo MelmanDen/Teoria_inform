@@ -27,28 +27,26 @@ print(summators, type(summators[0][0]))
 
 def encoding():
     # вводим элементы которые потребуются
-    spisok_text_to_bit = ['01100001', '01100010', '01100011', '00111111', '00111111']
-    summators = [[0, 1], [1, 2], [0,1,2]]
+    spisok_text_to_bit = '01100001'
+    summators = [[0, 1], [1, 2], [0, 1, 2]]
     spisok_polinomov = []
     k = []
+    abc = []
     spisok_indeksov_edinic = []
 
     # Из списка битов вытаскиваем индексы единиц для кодирования полиномами
     for i in range(len(spisok_text_to_bit)):
-        indeks_edinic = []
-        for j in range(len(spisok_text_to_bit[i])):
-            if spisok_text_to_bit[i][j] == '1':
-                indeks_edinic.append(j)
-        spisok_indeksov_edinic.append(indeks_edinic)
+        if spisok_text_to_bit[i] == '1':
+            spisok_indeksov_edinic.append(i)
 
     print(spisok_indeksov_edinic)
+    print(summators)
 
     # делам "умножение полиномов"
     for i in range(len(summators)):
         for j in range(len(summators[i])):
             for m in range(len(spisok_indeksov_edinic)):
-                for c in range(len(spisok_indeksov_edinic[m])):
-                    spisok_polinomov.append(spisok_indeksov_edinic[m][c] + summators[i][j])
+                spisok_polinomov.append(spisok_indeksov_edinic[m] + summators[i][j])
         k.append(spisok_polinomov)
         spisok_polinomov = []
 
@@ -60,7 +58,6 @@ def encoding():
         f = list(set(f))
         spisok_polinomov.append(f)
     print(spisok_polinomov)
-
 
     encoded_string = []
     max_el = 0
@@ -80,8 +77,10 @@ def encoding():
         encoded_string.append(encoded_list)
     asd = ''
     print(encoded_string)
-    for j in range(len(encoded_string)-1):
-       asd += ''.join(encoded_string[j])+'.' + ''.join(encoded_string[j+1]) + '.'
+    for j in range(len(encoded_string) - 1):
+        asd += ''.join(encoded_string[j]) + '.' + ''.join(encoded_string[j + 1]) + '.'
     print(asd)
+
+
 encoding()
 
