@@ -2,35 +2,24 @@
 # import tkinter.messagebox as mb
 import binascii
 
-primal_text = "asd"
+primal_text = "Привет всем Hello world"
 # summators = []
 abc = []
 encoded_string_finished = ''
+summators = [[0, 1], [0, 2]]
+
 
 def text_to_bits(text, encoding='utf-8', errors='surrogatepass'):
     bits = bin(int(binascii.hexlify(text.encode(encoding, errors)), 16))[2:]
     return bits.zfill(8 * ((len(bits) + 7) // 8))
 
+
 spisok_text_to_bit = text_to_bits(primal_text)
 print(spisok_text_to_bit)
 
-
-
-# # вводим сумматоры Доделать!!!!
-# kol_summators = int(input("введите колво сумматоров "))
-# # сдлеать вывод месседжбоксов для ввода сумматоров
-# for i in range(kol_summators):
-#     # сделать ошибку ввода для чисел больше количества регистров!!!
-#     summators.append(list(input('введите сумматоры ')))
-#
-# for i in range(len(summators)):
-#     for j in range(len(summators[i])):
-#         summators[i][j] = int(summators[i][j])
-# print(summators, type(summators[0][0]))
-
-def encoding(spisok_text_to_bit):
+def encoding(spisok_text_to_bit, summators):
     # вводим элементы которые потребуются
-    summators = [[0, 1], [0, 2]]
+
     spisok_polinomov = []
     spisok_polinov_do_sumpomod2 = []
     spisok_indeksov_edinic = []
@@ -89,34 +78,34 @@ def encoding(spisok_text_to_bit):
 
 # каждый символ заносим в функцию возращая список закодированных символов
 
-encoding(spisok_text_to_bit)
+encoding(spisok_text_to_bit, summators)
 print(encoded_string_finished, type(encoded_string_finished))
 encoded_string_finished = encoded_string_finished[:-1]
 encoded_string_finished = encoded_string_finished.split('.')
 print(encoded_string_finished, type(encoded_string_finished))
 
-def decoding(encoded_string_finished):
-    summators = [[0, 1], [0, 2]]
+
+def decoding(encoded_string_finished, summators):
+    # обьявляем переменные
     global registrs
     registrs = []
     kol_registrov = 0
     global decoded_string
     decoded_string = ''
-
+    # находим кол-во регистров по максимальному элементу в сумматоре и обнуляем их
     for i in summators:
         if kol_registrov < max(i):
             kol_registrov = max(i)
 
-    for i in range(kol_registrov+1):
+    for i in range(kol_registrov + 1):
         registrs.append(0)
-    print(registrs)
-
+    # функция сдвига регистров в парво
     def append_zero():
         for i in reversed(range(len(registrs))):
-            registrs[i] = registrs[i-1]
+            registrs[i] = registrs[i - 1]
         registrs[0] = 0
         return registrs
-
+    # функция создание проверочных битов
     def calc_prov_bits():
         global proverochnie_bits
         proverochnie_bits = ''
@@ -129,7 +118,7 @@ def decoding(encoded_string_finished):
             elif c % 2 == 0:
                 proverochnie_bits += ''.join('0')
         return proverochnie_bits
-
+    # функция декодирование строки
     for i in range(len(encoded_string_finished)):
         append_zero()
         calc_prov_bits()
@@ -140,7 +129,7 @@ def decoding(encoded_string_finished):
             decoded_string += ''.join('0')
 
     print(decoded_string)
-
+    # функции перевода двоичной строки обратно в текст
     def text_from_bits(binstring, encoding='utf-8', errors='surrogatepass'):
         n = int(binstring, 2)
         return int2bytes(n).decode(encoding, errors)
@@ -151,8 +140,8 @@ def decoding(encoded_string_finished):
         return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
 
     decoded_primal_text = text_from_bits(decoded_string)
-    print(decoded_primal_text)
 
     return decoded_primal_text
-decoding(encoded_string_finished)
-print(decoding(encoded_string_finished), "END")
+
+
+print(decoding(encoded_string_finished, summators), "END")
