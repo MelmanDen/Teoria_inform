@@ -1,14 +1,32 @@
 from PIL import Image
+import tkinter as tk
+from tkinter import filedialog as fd
+import tkinter.messagebox as mb
 import random
 import numpy as np
 import copy
 
-
-im = Image.open('testpic2.jpg').resize((400, 400))
-a = np.array(im)
-im.show()
-b = copy.deepcopy(a)
+window = tk.Tk()
+window.title('Encoder+Decoder')
+window.geometry('400x300+700+400')
+window.resizable(False, False)
+window.configure(bg='black')
 Izbitochnie_bits = 4
+
+
+def task_entry():
+    global a
+    global b
+    global im
+    tipimage = [('картинка', '*.jpg')]
+    imagin = fd.askopenfilename(filetypes=tipimage)
+    if imagin is not None:
+        im = Image.open(imagin).resize((400, 400))
+        a = np.array(im)
+        b = copy.deepcopy(a)
+        btn2.config(state="normal")
+    else:
+        mb.showwarning("Warning", "Выберите картинку")
 
 
 def zashumlenie(matrica):
@@ -101,21 +119,40 @@ def decode(arr, r=Izbitochnie_bits):
     return int(arr, 2)
 
 
-for i in range(len(a)):
-    for j in range(len(a[i])):
-        for m in range(len(a[i][j])):
-            a[i][j][m] = zashumlenie(a[i][j][m])
+def task_main():
+    im.show()
 
-im2 = Image.fromarray(a, mode="RGB")
-im2.save('shumka.jpg')
-im2.show()
+    for i in range(len(a)):
+        for j in range(len(a[i])):
+            for m in range(len(a[i][j])):
+                a[i][j][m] = zashumlenie(a[i][j][m])
+
+    im2 = Image.fromarray(a, mode="RGB")
+    im2.save('shumka.jpg')
+    im2.show()
+
+    for RED in range(len(b)):
+        for GREEN in range(len(b[RED])):
+            for BLUE in range(len(b[RED][GREEN])):
+                b[RED][GREEN][BLUE] = decode(encode(b[RED][GREEN][BLUE]))
+
+    im3 = Image.fromarray(b, mode="RGB")
+    im3.save('myimg.jpg')
+    im3.show()
 
 
-for RED in range(len(b)):
-    for GREEN in range(len(b[RED])):
-        for BLUE in range(len(b[RED][GREEN])):
-            b[RED][GREEN][BLUE] = decode(encode(b[RED][GREEN][BLUE]))
+lbl = tk.Label(text="Кодировщик изображений", font=('Roboto', 10, 'bold'), bg='orange', fg='white')
+lbl.place(x=120, y=20)
 
-im3 = Image.fromarray(b, mode="RGB")
-im3.save('myimg.jpg')
-im3.show()
+lbl1 = tk.Label(text="Выбирите картинку", font=('Roboto', 10, 'bold'), bg='orange', fg='white')
+lbl1.place(x=20, y=50)
+
+btn1 = tk.Button(text="Выбрать", width=10, font=('Roboto', 8, 'bold'), bg='green', fg='white', command=task_entry)
+btn1.pack()
+btn1.place(x=200, y=50)
+
+btn2 = tk.Button(text="Запуск", width=10, font=('Roboto', 8, 'bold'), bg='green', fg='white', state="disabled", command=task_main)
+btn2.pack()
+btn2.place(x=200, y=110)
+
+window.mainloop()
